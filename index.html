@@ -4,153 +4,166 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0a0a0f">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#f8fafc">
   <title>TaskAI</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    :root{--bg:#0a0a0f;--surface:#13131a;--elevated:#1c1c26;--border:#2d2d3a;--text:#f0f0f5;--text2:#9090a0;--purple:#8b5cf6;--blue:#3b82f6;--red:#ef4444;--orange:#f97316;--green:#22c55e}
+    :root{--bg:#f8fafc;--surface:#ffffff;--elevated:#f1f5f9;--border:#e2e8f0;--text:#1e293b;--text2:#64748b;--purple:#7c3aed;--blue:#3b82f6;--red:#dc2626;--orange:#ea580c;--yellow:#ca8a04;--green:#16a34a}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh}
-    .app{max-width:500px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+    .app{max-width:500px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
     
-    header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(10,10,15,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:sticky;top:0;z-index:100}
-    .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px}
-    .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
-    .header-btn{width:40px;height:40px;border:1px solid var(--border);background:var(--elevated);border-radius:10px;color:var(--text2);font-size:18px;cursor:pointer}
+    header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;color:var(--purple)}
+    .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--blue));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:white}
+    .header-btn{width:40px;height:40px;border:1px solid var(--border);background:var(--surface);border-radius:10px;color:var(--text2);font-size:18px;cursor:pointer}
+    .header-btn:hover{background:var(--elevated)}
     
-    .stats{padding:16px 20px;display:flex;gap:10px}
-    .stat{flex:1;background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:all 0.2s}
+    .stats{padding:12px 16px;display:flex;gap:8px;overflow-x:auto;background:var(--surface);border-bottom:1px solid var(--border)}
+    .stats::-webkit-scrollbar{display:none}
+    .stat{flex-shrink:0;background:var(--elevated);border:2px solid transparent;border-radius:12px;padding:10px 14px;text-align:center;cursor:pointer;transition:all 0.2s;min-width:70px}
     .stat:hover{border-color:var(--purple)}
-    .stat.active{border-color:var(--purple);background:rgba(139,92,246,0.1)}
-    .stat-num{font-size:24px;font-weight:700}
-    .stat-num.urgent{color:var(--red)}.stat-num.today{color:var(--orange)}.stat-num.done{color:var(--green)}
-    .stat-label{font-size:11px;color:var(--text2);margin-top:4px}
+    .stat.active{border-color:var(--purple);background:rgba(124,58,237,0.1)}
+    .stat-num{font-size:20px;font-weight:700}
+    .stat-num.urgent{color:var(--red)}
+    .stat-num.important{color:var(--orange)}
+    .stat-num.inwork{color:var(--blue)}
+    .stat-num.today{color:var(--yellow)}
+    .stat-label{font-size:10px;color:var(--text2);margin-top:2px}
     
-    .active-filter{padding:0 20px 10px;display:none}
+    .active-filter{padding:8px 20px;display:none;background:var(--surface)}
     .active-filter.show{display:block}
-    .filter-tag{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:var(--purple);border-radius:20px;font-size:13px}
-    .filter-tag button{background:none;border:none;color:white;font-size:16px;cursor:pointer;padding:0;line-height:1}
+    .filter-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;background:var(--purple);color:white;border-radius:20px;font-size:13px}
+    .filter-tag button{background:none;border:none;color:white;font-size:14px;cursor:pointer;padding:0}
     
-    .input-section{padding:16px 20px;display:flex;gap:10px}
-    .voice-btn{width:50px;height:50px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--blue),var(--purple));color:white;font-size:22px;cursor:pointer;flex-shrink:0}
+    .input-section{padding:12px 16px;display:flex;gap:8px;background:var(--surface);border-bottom:1px solid var(--border)}
+    .voice-btn{width:46px;height:46px;border-radius:12px;border:none;background:var(--purple);color:white;font-size:20px;cursor:pointer;flex-shrink:0}
     .voice-btn.listening{animation:pulse 1.5s infinite}
-    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0.4)}50%{box-shadow:0 0 0 12px rgba(139,92,246,0)}}
-    .text-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;color:var(--text);font-size:16px;outline:none}
-    .text-input:focus{border-color:var(--purple)}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0.4)}50%{box-shadow:0 0 0 10px rgba(124,58,237,0)}}
+    .text-input{flex:1;background:var(--elevated);border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font-size:15px;outline:none}
+    .text-input:focus{border-color:var(--purple);background:var(--surface)}
     .text-input::placeholder{color:var(--text2)}
-    .send-btn{width:50px;height:50px;background:var(--purple);border:none;border-radius:14px;color:white;font-size:20px;cursor:pointer;flex-shrink:0}
+    .send-btn{width:46px;height:46px;background:var(--purple);border:none;border-radius:12px;color:white;font-size:18px;cursor:pointer;flex-shrink:0}
     
-    .processing{padding:10px 20px;color:var(--purple);font-size:14px;display:none;align-items:center;gap:8px}
+    .processing{padding:8px 20px;color:var(--purple);font-size:13px;display:none;align-items:center;gap:8px;background:var(--surface)}
     .processing.show{display:flex}
-    .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin 1s linear infinite}
+    .spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
     
-    .tasks-section{flex:1;padding:0 20px 120px;overflow-y:auto}
-    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:10}
-    .section-title{font-size:18px;font-weight:600}
-    .view-toggle{display:flex;gap:6px}
-    .view-btn{padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--text2);cursor:pointer}
-    .view-btn.active{background:var(--purple);border-color:var(--purple);color:white}
+    .tasks-section{flex:1;padding:12px 16px 120px;overflow-y:auto}
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .section-title{font-size:16px;font-weight:600;color:var(--text2)}
+    .clear-done{font-size:13px;color:var(--text2);background:none;border:none;cursor:pointer}
+    .clear-done:hover{color:var(--red)}
     
-    .task-list{display:flex;flex-direction:column;gap:10px}
-    .task{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;transition:border-color 0.2s}
-    .task:hover{border-color:var(--purple)}
-    .task.done{opacity:0.5}
+    .task-list{display:flex;flex-direction:column;gap:8px}
+    .task{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:all 0.2s;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+    .task:hover{border-color:var(--purple);box-shadow:0 2px 8px rgba(124,58,237,0.1)}
+    .task.done{opacity:0.6;background:var(--elevated)}
     .task-header{display:flex;gap:12px;align-items:flex-start}
-    .checkbox{width:24px;height:24px;border:2px solid var(--border);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+    .checkbox{width:22px;height:22px;border:2px solid var(--border);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
     .checkbox:hover{border-color:var(--green)}
     .task.done .checkbox{background:var(--green);border-color:var(--green)}
-    .checkbox::after{content:'✓';color:white;font-size:14px;font-weight:700;opacity:0}
+    .checkbox::after{content:'✓';color:white;font-size:12px;font-weight:700;opacity:0}
     .task.done .checkbox::after{opacity:1}
     .task-content{flex:1;min-width:0}
-    .task-title{font-size:16px;font-weight:500;line-height:1.4}
+    .task-title{font-size:15px;font-weight:500;line-height:1.4;color:var(--text)}
     .task.done .task-title{text-decoration:line-through;color:var(--text2)}
-    .task-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-    .badge{padding:4px 10px;border-radius:8px;font-size:12px;font-weight:500}
-    .badge.urgent{background:rgba(239,68,68,0.15);color:var(--red)}
-    .badge.high{background:rgba(249,115,22,0.15);color:var(--orange)}
-    .badge.medium{background:rgba(59,130,246,0.15);color:var(--blue)}
-    .badge.low{background:rgba(34,197,94,0.15);color:var(--green)}
+    .task-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .badge{padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600}
+    .badge.urgent{background:#fef2f2;color:var(--red)}
+    .badge.important{background:#fff7ed;color:var(--orange)}
+    .badge.inwork{background:#eff6ff;color:var(--blue)}
+    .badge.later{background:#f0fdf4;color:var(--green)}
     .badge.deadline{background:var(--elevated);color:var(--text2)}
-    .badge.overdue{background:rgba(239,68,68,0.15);color:var(--red)}
+    .badge.overdue{background:#fef2f2;color:var(--red)}
     
-    .empty{text-align:center;padding:60px 20px;color:var(--text2)}
-    .empty-icon{font-size:48px;margin-bottom:16px;opacity:0.5}
-    .empty-title{font-size:16px;margin-bottom:8px;color:var(--text)}
+    .done-section{margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+    .done-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .done-title{font-size:14px;color:var(--text2);display:flex;align-items:center;gap:6px}
+    .done-count{background:var(--elevated);padding:2px 8px;border-radius:10px;font-size:12px}
     
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;align-items:flex-end;justify-content:center}
+    .empty{text-align:center;padding:40px 20px;color:var(--text2)}
+    .empty-icon{font-size:40px;margin-bottom:12px;opacity:0.5}
+    .empty-title{font-size:15px;margin-bottom:6px;color:var(--text)}
+    
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:200;display:none;align-items:flex-end;justify-content:center}
     .modal-overlay.open{display:flex}
-    .modal{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;animation:slideUp 0.3s}
+    .modal{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;animation:slideUp 0.3s}
     @keyframes slideUp{from{transform:translateY(100%)}}
-    .modal-header{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--surface);z-index:10}
-    .modal-title{font-size:18px;font-weight:600}
-    .modal-close{width:36px;height:36px;border:none;background:var(--elevated);border-radius:10px;color:var(--text);font-size:20px;cursor:pointer}
-    .modal-body{padding:20px}
+    .modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--surface)}
+    .modal-title{font-size:17px;font-weight:600}
+    .modal-close{width:32px;height:32px;border:none;background:var(--elevated);border-radius:8px;color:var(--text);font-size:18px;cursor:pointer}
+    .modal-body{padding:16px 20px}
     
-    .form-group{margin-bottom:20px}
-    .form-label{font-size:14px;color:var(--text2);margin-bottom:8px;display:block}
-    .form-input{width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-size:16px;outline:none}
-    .form-input:focus{border-color:var(--purple)}
-    .form-textarea{min-height:100px;resize:vertical;font-family:inherit}
+    .form-group{margin-bottom:16px}
+    .form-label{font-size:13px;color:var(--text2);margin-bottom:6px;display:block}
+    .form-input{width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:15px;outline:none}
+    .form-input:focus{border-color:var(--purple);background:var(--surface)}
+    .form-textarea{min-height:80px;resize:vertical;font-family:inherit}
     
     .priority-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .priority-btn{padding:12px;border:2px solid var(--border);background:var(--elevated);border-radius:10px;color:var(--text2);font-size:13px;cursor:pointer;text-align:center;transition:all 0.2s}
-    .priority-btn.active.urgent{border-color:var(--red);background:rgba(239,68,68,0.1);color:var(--red)}
-    .priority-btn.active.high{border-color:var(--orange);background:rgba(249,115,22,0.1);color:var(--orange)}
-    .priority-btn.active.medium{border-color:var(--blue);background:rgba(59,130,246,0.1);color:var(--blue)}
-    .priority-btn.active.low{border-color:var(--green);background:rgba(34,197,94,0.1);color:var(--green)}
+    .priority-btn{padding:10px;border:2px solid var(--border);background:var(--surface);border-radius:10px;color:var(--text2);font-size:13px;cursor:pointer;text-align:center;transition:all 0.2s}
+    .priority-btn.active.urgent{border-color:var(--red);background:#fef2f2;color:var(--red)}
+    .priority-btn.active.important{border-color:var(--orange);background:#fff7ed;color:var(--orange)}
+    .priority-btn.active.inwork{border-color:var(--blue);background:#eff6ff;color:var(--blue)}
+    .priority-btn.active.later{border-color:var(--green);background:#f0fdf4;color:var(--green)}
     
-    .modal-actions{display:flex;gap:10px;margin-top:24px}
-    .btn{flex:1;padding:16px;border:none;border-radius:14px;font-size:16px;font-weight:600;cursor:pointer}
+    .modal-actions{display:flex;gap:10px;margin-top:20px}
+    .btn{flex:1;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
     .btn-primary{background:var(--purple);color:white}
-    .btn-danger{background:rgba(239,68,68,0.15);color:var(--red)}
+    .btn-danger{background:#fef2f2;color:var(--red)}
     
     .chat-modal{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.3s}
     .chat-modal.open{transform:translateX(0)}
-    .chat-header{padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:var(--bg)}
-    .back-btn{width:40px;height:40px;background:var(--elevated);border:none;border-radius:10px;color:var(--text);font-size:18px;cursor:pointer}
-    .chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+    .chat-header{padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:var(--surface)}
+    .back-btn{width:36px;height:36px;background:var(--elevated);border:none;border-radius:10px;color:var(--text);font-size:16px;cursor:pointer}
+    .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
     .suggestions{display:flex;flex-direction:column;gap:8px}
-    .suggestion{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;font-size:14px;color:var(--text2);cursor:pointer;text-align:left}
+    .suggestion{padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;font-size:14px;color:var(--text2);cursor:pointer;text-align:left}
     .suggestion:hover{border-color:var(--purple);color:var(--text)}
     .chat-msg{max-width:85%}
     .chat-msg.user{align-self:flex-end}
     .chat-msg.assistant{align-self:flex-start}
-    .bubble{padding:14px 18px;border-radius:18px;font-size:15px;line-height:1.5;white-space:pre-wrap}
-    .chat-msg.user .bubble{background:var(--purple);border-bottom-right-radius:4px}
+    .bubble{padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.5;white-space:pre-wrap}
+    .chat-msg.user .bubble{background:var(--purple);color:white;border-bottom-right-radius:4px}
     .chat-msg.assistant .bubble{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px}
-    .chat-typing{padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:18px;color:var(--text2);font-size:14px}
-    .chat-input-area{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;background:var(--bg)}
-    .chat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;color:var(--text);font-size:16px;outline:none}
-    .chat-send{width:50px;height:50px;background:var(--purple);border:none;border-radius:14px;color:white;font-size:20px;cursor:pointer}
+    .chat-typing{padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;color:var(--text2);font-size:13px}
+    .chat-input-area{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--surface)}
+    .chat-input{flex:1;background:var(--elevated);border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font-size:15px;outline:none}
+    .chat-send{width:44px;height:44px;background:var(--purple);border:none;border-radius:12px;color:white;font-size:18px;cursor:pointer}
     
-    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,15,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;justify-content:center;padding:10px 20px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
-    .nav-btn{flex:1;max-width:120px;padding:10px;background:none;border:none;border-radius:12px;color:var(--text2);font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
-    .nav-btn.active{color:var(--purple);background:rgba(139,92,246,0.1)}
-    .nav-icon{font-size:22px}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;justify-content:center;padding:8px 20px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+    .nav-btn{flex:1;max-width:120px;padding:8px;background:none;border:none;border-radius:10px;color:var(--text2);font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+    .nav-btn.active{color:var(--purple);background:rgba(124,58,237,0.1)}
+    .nav-icon{font-size:20px}
     
-    .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--elevated);border:1px solid var(--border);padding:14px 24px;border-radius:14px;font-size:14px;z-index:300}
+    .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:white;padding:12px 20px;border-radius:12px;font-size:14px;z-index:300}
   </style>
 </head>
 <body>
   <div class="app">
     <header>
-      <div class="logo"><div class="logo-icon">⚡</div><span>TaskAI</span></div>
+      <div class="logo"><div class="logo-icon">⚡</div>TaskAI</div>
       <button class="header-btn" onclick="openChat()">💬</button>
     </header>
     
     <div class="stats">
       <div class="stat" id="statUrgent" onclick="filterBy('urgent')">
         <div class="stat-num urgent" id="urgentCount">0</div>
-        <div class="stat-label">Срочных</div>
+        <div class="stat-label">Срочно</div>
+      </div>
+      <div class="stat" id="statImportant" onclick="filterBy('important')">
+        <div class="stat-num important" id="importantCount">0</div>
+        <div class="stat-label">Важно</div>
+      </div>
+      <div class="stat" id="statInwork" onclick="filterBy('inwork')">
+        <div class="stat-num inwork" id="inworkCount">0</div>
+        <div class="stat-label">В работе</div>
       </div>
       <div class="stat" id="statToday" onclick="filterBy('today')">
         <div class="stat-num today" id="todayCount">0</div>
-        <div class="stat-label">На сегодня</div>
-      </div>
-      <div class="stat" id="statDone" onclick="filterBy('done')">
-        <div class="stat-num done" id="doneCount">0</div>
-        <div class="stat-label">Выполнено</div>
+        <div class="stat-label">Сегодня</div>
       </div>
     </div>
     
@@ -163,7 +176,7 @@
     
     <div class="input-section">
       <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🎤</button>
-      <input type="text" class="text-input" id="textInput" placeholder="Добавить задачу или команду..." onkeypress="if(event.key==='Enter')sendText()">
+      <input type="text" class="text-input" id="textInput" placeholder="Добавить задачу..." onkeypress="if(event.key==='Enter')sendText()">
       <button class="send-btn" onclick="sendText()">+</button>
     </div>
     
@@ -171,13 +184,17 @@
     
     <div class="tasks-section">
       <div class="section-header">
-        <h2 class="section-title" id="sectionTitle">Все задачи</h2>
-        <div class="view-toggle">
-          <button class="view-btn active" data-v="active" onclick="setView('active')">Активные</button>
-          <button class="view-btn" data-v="all" onclick="setView('all')">Все</button>
-        </div>
+        <span class="section-title" id="sectionTitle">Активные задачи</span>
       </div>
       <div class="task-list" id="taskList"></div>
+      
+      <div class="done-section" id="doneSection" style="display:none">
+        <div class="done-header">
+          <span class="done-title">✅ Выполнено <span class="done-count" id="doneCount">0</span></span>
+          <button class="clear-done" onclick="clearDone()">Очистить</button>
+        </div>
+        <div class="task-list" id="doneList"></div>
+      </div>
     </div>
   </div>
 
@@ -200,9 +217,9 @@
           <label class="form-label">Приоритет</label>
           <div class="priority-selector">
             <button class="priority-btn urgent" data-p="urgent" onclick="setPriority('urgent')">🔴 Срочно</button>
-            <button class="priority-btn high" data-p="high" onclick="setPriority('high')">🟠 Важно</button>
-            <button class="priority-btn medium" data-p="medium" onclick="setPriority('medium')">🔵 Обычно</button>
-            <button class="priority-btn low" data-p="low" onclick="setPriority('low')">🟢 Позже</button>
+            <button class="priority-btn important" data-p="important" onclick="setPriority('important')">🟠 Важно</button>
+            <button class="priority-btn inwork" data-p="inwork" onclick="setPriority('inwork')">🔵 В работе</button>
+            <button class="priority-btn later" data-p="later" onclick="setPriority('later')">🟢 Позже</button>
           </div>
         </div>
         <div class="form-group">
@@ -220,7 +237,7 @@
   <div class="chat-modal" id="chatModal">
     <div class="chat-header">
       <button class="back-btn" onclick="closeChat()">←</button>
-      <span style="font-weight:600;font-size:18px">AI Ассистент</span>
+      <span style="font-weight:600;font-size:17px">AI Ассистент</span>
     </div>
     <div class="chat-messages" id="chatMessages">
       <div class="suggestions" id="suggestions">
@@ -231,26 +248,25 @@
       </div>
     </div>
     <div class="chat-input-area">
-      <input type="text" class="chat-input" id="chatInput" placeholder="Спроси что-нибудь..." onkeypress="if(event.key==='Enter')sendChat()">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Спроси..." onkeypress="if(event.key==='Enter')sendChat()">
       <button class="chat-send" onclick="sendChat()">→</button>
     </div>
   </div>
 
   <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="goTasks()"><span class="nav-icon">📋</span><span>Задачи</span></button>
-    <button class="nav-btn" onclick="openChat()"><span class="nav-icon">🤖</span><span>AI</span></button>
+    <button class="nav-btn active" id="navTasks" onclick="goTasks()"><span class="nav-icon">📋</span><span>Задачи</span></button>
+    <button class="nav-btn" id="navAI" onclick="openChat()"><span class="nav-icon">🤖</span><span>AI</span></button>
   </nav>
 
   <script>
     const API='/api/chat';
-    let tasks=JSON.parse(localStorage.getItem('taskai3')||'[]');
-    let viewMode='active';
+    let tasks=JSON.parse(localStorage.getItem('taskai4')||'[]');
     let filterMode=null;
     let listening=false;
     let recognition=null;
     let chatHistory=[];
     let editingId=null;
-    let editPriority='medium';
+    let editPriority='inwork';
     let isProcessing=false;
 
     init();
@@ -297,50 +313,22 @@
     function stopVoice(){
       listening=false;
       document.getElementById('voiceBtn').classList.remove('listening');
-      document.getElementById('textInput').placeholder='Добавить задачу или команду...';
+      document.getElementById('textInput').placeholder='Добавить задачу...';
     }
 
     function sendText(){
       const inp=document.getElementById('textInput');
       const t=inp.value.trim();
-      if(t){
-        inp.value='';
-        handleInput(t);
-      }
+      if(t){inp.value='';handleInput(t);}
     }
 
     function handleInput(text){
       const lower=text.toLowerCase();
-      
-      // Голосовые команды
-      if(lower.includes('срочн')||lower.includes('urgent')){
-        if(lower.includes('покажи')||lower.includes('открой')||lower.includes('показать')){
-          filterBy('urgent');
-          toast('🔴 Показываю срочные');
-          return;
-        }
-      }
-      if(lower.includes('сегодня')||lower.includes('today')){
-        if(lower.includes('покажи')||lower.includes('открой')||lower.includes('что ')||lower.includes('показать')){
-          filterBy('today');
-          toast('📅 Показываю на сегодня');
-          return;
-        }
-      }
-      if(lower.includes('выполнен')||lower.includes('готов')||lower.includes('done')){
-        if(lower.includes('покажи')||lower.includes('открой')||lower.includes('показать')){
-          filterBy('done');
-          toast('✅ Показываю выполненные');
-          return;
-        }
-      }
-      if(lower.includes('все задачи')||lower.includes('показать все')||lower==='все'){
-        clearFilter();
-        toast('📋 Все задачи');
-        return;
-      }
-      
-      // Иначе — добавляем задачу
+      if((lower.includes('покажи')||lower.includes('открой'))&&lower.includes('срочн')){filterBy('urgent');return;}
+      if((lower.includes('покажи')||lower.includes('открой'))&&lower.includes('важн')){filterBy('important');return;}
+      if((lower.includes('покажи')||lower.includes('открой'))&&(lower.includes('работ')||lower.includes('в работе'))){filterBy('inwork');return;}
+      if((lower.includes('покажи')||lower.includes('открой')||lower.includes('что'))&&lower.includes('сегодн')){filterBy('today');return;}
+      if(lower.includes('все задачи')||lower==='все'){clearFilter();return;}
       processInput(text);
     }
 
@@ -357,75 +345,57 @@
         });
         const data=await res.json();
         
-        if(data.error){
-          console.error('API error:',data.error);
-          addTaskSimple(text);
-          return;
-        }
+        if(data.error){addTaskSimple(text);return;}
         
         let newTasks=[];
         try{
           const match=data.content.match(/\[[\s\S]*?\]/);
           if(match)newTasks=JSON.parse(match[0]);
-        }catch(e){console.log('Parse error',e)}
+        }catch(e){}
         
         if(newTasks&&newTasks.length){
           newTasks.forEach(t=>{
+            let priority=t.priority||'inwork';
+            if(priority==='high')priority='important';
+            if(priority==='medium')priority='inwork';
+            if(priority==='low')priority='later';
             tasks.unshift({
               id:Date.now()+Math.random(),
               title:t.title||text,
               description:t.description||'',
-              priority:t.priority||'medium',
+              priority:priority,
               deadline:t.deadline||null,
               status:'active',
               created:new Date().toISOString()
             });
           });
-          save();
-          renderTasks();
-          updateStats();
+          save();renderTasks();updateStats();
           toast('✅ Добавлено: '+newTasks.length);
-        }else{
-          addTaskSimple(text);
-        }
-      }catch(e){
-        console.error(e);
-        addTaskSimple(text);
-      }
+        }else{addTaskSimple(text);}
+      }catch(e){addTaskSimple(text);}
       
       isProcessing=false;
       document.getElementById('processing').classList.remove('show');
     }
 
     function addTaskSimple(text){
-      tasks.unshift({
-        id:Date.now(),
-        title:text,
-        description:'',
-        priority:'medium',
-        deadline:null,
-        status:'active',
-        created:new Date().toISOString()
-      });
-      save();
-      renderTasks();
-      updateStats();
-      toast('✅ Задача добавлена');
+      tasks.unshift({id:Date.now(),title:text,description:'',priority:'inwork',deadline:null,status:'active',created:new Date().toISOString()});
+      save();renderTasks();updateStats();toast('✅ Добавлено');
       document.getElementById('processing').classList.remove('show');
+      isProcessing=false;
     }
 
-    function save(){localStorage.setItem('taskai3',JSON.stringify(tasks))}
+    function save(){localStorage.setItem('taskai4',JSON.stringify(tasks))}
 
     function filterBy(type){
       filterMode=type;
       document.querySelectorAll('.stat').forEach(s=>s.classList.remove('active'));
-      document.getElementById('stat'+type.charAt(0).toUpperCase()+type.slice(1)).classList.add('active');
-      
-      const labels={urgent:'🔴 Срочные',today:'📅 На сегодня',done:'✅ Выполненные'};
-      document.getElementById('filterLabel').textContent=labels[type];
+      const el=document.getElementById('stat'+type.charAt(0).toUpperCase()+type.slice(1));
+      if(el)el.classList.add('active');
+      const labels={urgent:'🔴 Срочные',important:'🟠 Важные',inwork:'🔵 В работе',today:'📅 На сегодня'};
+      document.getElementById('filterLabel').textContent=labels[type]||type;
       document.getElementById('activeFilter').classList.add('show');
-      document.getElementById('sectionTitle').textContent=labels[type];
-      
+      document.getElementById('sectionTitle').textContent=labels[type]||'Задачи';
       renderTasks();
     }
 
@@ -433,69 +403,55 @@
       filterMode=null;
       document.querySelectorAll('.stat').forEach(s=>s.classList.remove('active'));
       document.getElementById('activeFilter').classList.remove('show');
-      document.getElementById('sectionTitle').textContent='Все задачи';
-      renderTasks();
-    }
-
-    function setView(v){
-      viewMode=v;
-      document.querySelectorAll('.view-btn').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+      document.getElementById('sectionTitle').textContent='Активные задачи';
       renderTasks();
     }
 
     function renderTasks(){
       const list=document.getElementById('taskList');
-      let f=tasks;
+      const doneList=document.getElementById('doneList');
+      const doneSection=document.getElementById('doneSection');
       
-      const today=new Date();
-      today.setHours(0,0,0,0);
-      const tomorrow=new Date(today);
-      tomorrow.setDate(tomorrow.getDate()+1);
+      let active=tasks.filter(t=>t.status!=='done');
+      let done=tasks.filter(t=>t.status==='done');
       
-      // Apply filter
-      if(filterMode==='urgent'){
-        f=f.filter(t=>t.priority==='urgent'&&t.status!=='done');
-      }else if(filterMode==='today'){
-        f=f.filter(t=>t.deadline&&t.status!=='done'&&new Date(t.deadline)>=today&&new Date(t.deadline)<tomorrow);
-      }else if(filterMode==='done'){
-        f=f.filter(t=>t.status==='done');
-      }else{
-        // Default view
-        if(viewMode==='active'){
-          f=f.filter(t=>t.status!=='done');
-        }
-      }
+      const today=new Date();today.setHours(0,0,0,0);
+      const tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
       
-      // Sort
-      const prio={urgent:0,high:1,medium:2,low:3};
-      f.sort((a,b)=>{
-        if(a.status!==b.status)return a.status==='done'?1:-1;
+      if(filterMode==='urgent')active=active.filter(t=>t.priority==='urgent');
+      else if(filterMode==='important')active=active.filter(t=>t.priority==='important');
+      else if(filterMode==='inwork')active=active.filter(t=>t.priority==='inwork');
+      else if(filterMode==='today')active=active.filter(t=>t.deadline&&new Date(t.deadline)>=today&&new Date(t.deadline)<tomorrow);
+      
+      const prio={urgent:0,important:1,inwork:2,later:3};
+      active.sort((a,b)=>{
         if(prio[a.priority]!==prio[b.priority])return prio[a.priority]-prio[b.priority];
         if(a.deadline&&b.deadline)return new Date(a.deadline)-new Date(b.deadline);
         if(a.deadline)return -1;
-        if(b.deadline)return 1;
         return 0;
       });
       
-      if(!f.length){
-        const emptyMsg=filterMode?'Нет задач в этой категории':'Нет задач';
-        list.innerHTML='<div class="empty"><div class="empty-icon">📝</div><div class="empty-title">'+emptyMsg+'</div><div>Скажи или напиши задачу</div></div>';
-        return;
+      const prioLabels={urgent:'🔴 Срочно',important:'🟠 Важно',inwork:'🔵 В работе',later:'🟢 Позже'};
+      
+      if(!active.length){
+        list.innerHTML='<div class="empty"><div class="empty-icon">📝</div><div class="empty-title">'+(filterMode?'Нет задач':'Нет активных задач')+'</div><div>Добавьте задачу голосом или текстом</div></div>';
+      }else{
+        list.innerHTML=active.map(t=>{
+          const dl=deadlineInfo(t.deadline);
+          return'<div class="task" onclick="openEdit('+t.id+')"><div class="task-header"><div class="checkbox" onclick="event.stopPropagation();toggle('+t.id+')"></div><div class="task-content"><div class="task-title">'+esc(t.title)+'</div><div class="task-meta"><span class="badge '+t.priority+'">'+(prioLabels[t.priority]||t.priority)+'</span>'+(t.deadline?'<span class="badge deadline '+dl.cls+'">📅 '+dl.text+'</span>':'')+'</div></div></div></div>';
+        }).join('');
       }
       
-      const prioLabels={urgent:'🔴 Срочно',high:'🟠 Важно',medium:'🔵 Обычно',low:'🟢 Позже'};
-      
-      list.innerHTML=f.map(t=>{
-        const dl=deadlineInfo(t.deadline);
-        return'<div class="task '+(t.status==='done'?'done':'')+'" onclick="openEdit('+t.id+')"><div class="task-header"><div class="checkbox" onclick="event.stopPropagation();toggle('+t.id+')"></div><div class="task-content"><div class="task-title">'+esc(t.title)+'</div><div class="task-meta"><span class="badge '+t.priority+'">'+prioLabels[t.priority]+'</span>'+(t.deadline?'<span class="badge deadline '+dl.cls+'">📅 '+dl.text+'</span>':'')+'</div></div></div></div>';
-      }).join('');
+      if(done.length&&!filterMode){
+        doneSection.style.display='block';
+        document.getElementById('doneCount').textContent=done.length;
+        doneList.innerHTML=done.slice(0,5).map(t=>'<div class="task done" onclick="openEdit('+t.id+')"><div class="task-header"><div class="checkbox" onclick="event.stopPropagation();toggle('+t.id+')"></div><div class="task-content"><div class="task-title">'+esc(t.title)+'</div></div></div></div>').join('');
+      }else{doneSection.style.display='none';}
     }
 
     function deadlineInfo(d){
       if(!d)return{text:'',cls:''};
-      const date=new Date(d);
-      const today=new Date();
-      today.setHours(0,0,0,0);
+      const date=new Date(d);const today=new Date();today.setHours(0,0,0,0);
       const diff=Math.ceil((date-today)/86400000);
       if(diff<0)return{text:'Просрочено',cls:'overdue'};
       if(diff===0)return{text:'Сегодня',cls:'overdue'};
@@ -506,31 +462,27 @@
 
     function toggle(id){
       const t=tasks.find(x=>x.id===id);
-      if(t){
-        t.status=t.status==='done'?'active':'done';
-        save();
-        renderTasks();
-        updateStats();
-      }
+      if(t){t.status=t.status==='done'?'active':'done';save();renderTasks();updateStats();}
     }
 
     function updateStats(){
       const active=tasks.filter(t=>t.status!=='done');
       document.getElementById('urgentCount').textContent=active.filter(t=>t.priority==='urgent').length;
-      
-      const today=new Date();
-      today.setHours(0,0,0,0);
-      const tom=new Date(today);
-      tom.setDate(tom.getDate()+1);
+      document.getElementById('importantCount').textContent=active.filter(t=>t.priority==='important').length;
+      document.getElementById('inworkCount').textContent=active.filter(t=>t.priority==='inwork').length;
+      const today=new Date();today.setHours(0,0,0,0);
+      const tom=new Date(today);tom.setDate(tom.getDate()+1);
       document.getElementById('todayCount').textContent=active.filter(t=>t.deadline&&new Date(t.deadline)>=today&&new Date(t.deadline)<tom).length;
-      document.getElementById('doneCount').textContent=tasks.filter(t=>t.status==='done').length;
+    }
+
+    function clearDone(){
+      tasks=tasks.filter(t=>t.status!=='done');
+      save();renderTasks();updateStats();toast('🗑️ Очищено');
     }
 
     function openEdit(id){
-      const t=tasks.find(x=>x.id===id);
-      if(!t)return;
-      editingId=id;
-      editPriority=t.priority;
+      const t=tasks.find(x=>x.id===id);if(!t)return;
+      editingId=id;editPriority=t.priority;
       document.getElementById('editTitle').value=t.title;
       document.getElementById('editDesc').value=t.description||'';
       document.getElementById('editDeadline').value=t.deadline||'';
@@ -538,10 +490,7 @@
       document.getElementById('editModal').classList.add('open');
     }
 
-    function closeEditModal(){
-      document.getElementById('editModal').classList.remove('open');
-      editingId=null;
-    }
+    function closeEditModal(){document.getElementById('editModal').classList.remove('open');editingId=null;}
 
     function setPriority(p){
       editPriority=p;
@@ -549,45 +498,33 @@
     }
 
     function saveTask(){
-      const t=tasks.find(x=>x.id===editingId);
-      if(!t)return;
+      const t=tasks.find(x=>x.id===editingId);if(!t)return;
       t.title=document.getElementById('editTitle').value.trim()||t.title;
       t.description=document.getElementById('editDesc').value.trim();
       t.priority=editPriority;
       t.deadline=document.getElementById('editDeadline').value||null;
-      save();
-      renderTasks();
-      updateStats();
-      closeEditModal();
-      toast('✅ Сохранено');
+      save();renderTasks();updateStats();closeEditModal();toast('✅ Сохранено');
     }
 
     function deleteTask(){
       if(!editingId)return;
       tasks=tasks.filter(x=>x.id!==editingId);
-      save();
-      renderTasks();
-      updateStats();
-      closeEditModal();
-      toast('🗑️ Удалено');
+      save();renderTasks();updateStats();closeEditModal();toast('🗑️ Удалено');
     }
 
-    // Chat
     function openChat(){
       document.getElementById('chatModal').classList.add('open');
-      document.querySelectorAll('.nav-btn')[1].classList.add('active');
-      document.querySelectorAll('.nav-btn')[0].classList.remove('active');
+      document.getElementById('navAI').classList.add('active');
+      document.getElementById('navTasks').classList.remove('active');
     }
     
     function closeChat(){
       document.getElementById('chatModal').classList.remove('open');
-      document.querySelectorAll('.nav-btn')[0].classList.add('active');
-      document.querySelectorAll('.nav-btn')[1].classList.remove('active');
+      document.getElementById('navTasks').classList.add('active');
+      document.getElementById('navAI').classList.remove('active');
     }
     
-    function goTasks(){
-      closeChat();
-    }
+    function goTasks(){closeChat();}
 
     function askQ(btn){
       document.getElementById('chatInput').value=btn.textContent.replace(/^[^\s]+\s/,'');
@@ -596,51 +533,36 @@
 
     async function sendChat(){
       const inp=document.getElementById('chatInput');
-      const msg=inp.value.trim();
-      if(!msg)return;
-      
+      const msg=inp.value.trim();if(!msg)return;
       inp.value='';
       chatHistory.push({role:'user',content:msg});
       renderChatMsg();
       document.getElementById('suggestions').style.display='none';
       
-      // Show typing
       const chatDiv=document.getElementById('chatMessages');
       const typingEl=document.createElement('div');
-      typingEl.className='chat-typing';
-      typingEl.id='typing';
-      typingEl.textContent='AI думает...';
-      chatDiv.appendChild(typingEl);
-      chatDiv.scrollTop=chatDiv.scrollHeight;
+      typingEl.className='chat-typing';typingEl.id='typing';typingEl.textContent='AI думает...';
+      chatDiv.appendChild(typingEl);chatDiv.scrollTop=chatDiv.scrollHeight;
       
+      const prioNames={urgent:'СРОЧНО',important:'ВАЖНО',inwork:'в работе',later:'позже'};
       const summary=tasks.map(t=>{
         const st=t.status==='done'?'✅':'⬜';
         const dl=t.deadline?' до '+t.deadline:'';
-        const pr={urgent:'СРОЧНО',high:'важно',medium:'обычно',low:'не срочно'}[t.priority];
-        return st+' ['+pr+'] '+t.title+dl;
+        return st+' ['+prioNames[t.priority]+'] '+t.title+dl;
       }).join('\n');
       
-      const sys='Ты AI-ассистент для управления задачами. Сегодня: '+new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})+'\n\nЗадачи пользователя:\n'+(summary||'Пусто')+'\n\nПомогай с планированием, приоритизацией, давай конкретные советы. Отвечай кратко и полезно, на русском, используй эмодзи.';
+      const sys='Ты AI-ассистент для управления задачами. Сегодня: '+new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})+'\n\nЗадачи:\n'+(summary||'Пусто')+'\n\nПомогай планировать, приоритизировать, давай советы. Кратко, на русском, с эмодзи.';
       
       try{
-        const res=await fetch(API,{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({system:sys,messages:chatHistory})
-        });
+        const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:sys,messages:chatHistory})});
         const data=await res.json();
-        
         document.getElementById('typing')?.remove();
-        
-        if(data.error){
-          chatHistory.push({role:'assistant',content:'❌ Ошибка: '+data.error});
-        }else{
-          chatHistory.push({role:'assistant',content:data.content});
-        }
+        if(data.error){chatHistory.push({role:'assistant',content:'❌ '+data.error});}
+        else{chatHistory.push({role:'assistant',content:data.content});}
         renderChatMsg();
       }catch(e){
         document.getElementById('typing')?.remove();
-        chatHistory.push({role:'assistant',content:'❌ Нет связи с сервером'});
+        chatHistory.push({role:'assistant',content:'❌ Нет связи'});
         renderChatMsg();
       }
     }
