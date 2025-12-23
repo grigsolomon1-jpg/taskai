@@ -19,10 +19,17 @@
     .header-btn{width:40px;height:40px;border:1px solid var(--border);background:var(--elevated);border-radius:10px;color:var(--text2);font-size:18px;cursor:pointer}
     
     .stats{padding:16px 20px;display:flex;gap:10px}
-    .stat{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+    .stat{flex:1;background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:all 0.2s}
+    .stat:hover{border-color:var(--purple)}
+    .stat.active{border-color:var(--purple);background:rgba(139,92,246,0.1)}
     .stat-num{font-size:24px;font-weight:700}
     .stat-num.urgent{color:var(--red)}.stat-num.today{color:var(--orange)}.stat-num.done{color:var(--green)}
     .stat-label{font-size:11px;color:var(--text2);margin-top:4px}
+    
+    .active-filter{padding:0 20px 10px;display:none}
+    .active-filter.show{display:block}
+    .filter-tag{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:var(--purple);border-radius:20px;font-size:13px}
+    .filter-tag button{background:none;border:none;color:white;font-size:16px;cursor:pointer;padding:0;line-height:1}
     
     .input-section{padding:16px 20px;display:flex;gap:10px}
     .voice-btn{width:50px;height:50px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--blue),var(--purple));color:white;font-size:22px;cursor:pointer;flex-shrink:0}
@@ -41,9 +48,9 @@
     .tasks-section{flex:1;padding:0 20px 120px;overflow-y:auto}
     .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:10}
     .section-title{font-size:18px;font-weight:600}
-    .filters{display:flex;gap:6px}
-    .filter{padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--text2);cursor:pointer}
-    .filter.active{background:var(--purple);border-color:var(--purple);color:white}
+    .view-toggle{display:flex;gap:6px}
+    .view-btn{padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--text2);cursor:pointer}
+    .view-btn.active{background:var(--purple);border-color:var(--purple);color:white}
     
     .task-list{display:flex;flex-direction:column;gap:10px}
     .task{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;transition:border-color 0.2s}
@@ -71,7 +78,6 @@
     .empty-icon{font-size:48px;margin-bottom:16px;opacity:0.5}
     .empty-title{font-size:16px;margin-bottom:8px;color:var(--text)}
     
-    /* Modal */
     .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;align-items:flex-end;justify-content:center}
     .modal-overlay.open{display:flex}
     .modal{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;animation:slideUp 0.3s}
@@ -87,21 +93,18 @@
     .form-input:focus{border-color:var(--purple)}
     .form-textarea{min-height:100px;resize:vertical;font-family:inherit}
     
-    .priority-selector{display:flex;gap:8px}
-    .priority-btn{flex:1;padding:12px;border:1px solid var(--border);background:var(--elevated);border-radius:10px;color:var(--text2);font-size:13px;cursor:pointer;text-align:center}
-    .priority-btn.active{border-color:var(--purple);color:var(--text)}
-    .priority-btn.urgent.active{border-color:var(--red);background:rgba(239,68,68,0.1);color:var(--red)}
-    .priority-btn.high.active{border-color:var(--orange);background:rgba(249,115,22,0.1);color:var(--orange)}
-    .priority-btn.medium.active{border-color:var(--blue);background:rgba(59,130,246,0.1);color:var(--blue)}
-    .priority-btn.low.active{border-color:var(--green);background:rgba(34,197,94,0.1);color:var(--green)}
+    .priority-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .priority-btn{padding:12px;border:2px solid var(--border);background:var(--elevated);border-radius:10px;color:var(--text2);font-size:13px;cursor:pointer;text-align:center;transition:all 0.2s}
+    .priority-btn.active.urgent{border-color:var(--red);background:rgba(239,68,68,0.1);color:var(--red)}
+    .priority-btn.active.high{border-color:var(--orange);background:rgba(249,115,22,0.1);color:var(--orange)}
+    .priority-btn.active.medium{border-color:var(--blue);background:rgba(59,130,246,0.1);color:var(--blue)}
+    .priority-btn.active.low{border-color:var(--green);background:rgba(34,197,94,0.1);color:var(--green)}
     
     .modal-actions{display:flex;gap:10px;margin-top:24px}
     .btn{flex:1;padding:16px;border:none;border-radius:14px;font-size:16px;font-weight:600;cursor:pointer}
     .btn-primary{background:var(--purple);color:white}
     .btn-danger{background:rgba(239,68,68,0.15);color:var(--red)}
-    .btn-secondary{background:var(--elevated);color:var(--text)}
     
-    /* Chat */
     .chat-modal{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.3s}
     .chat-modal.open{transform:translateX(0)}
     .chat-header{padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:var(--bg)}
@@ -116,11 +119,11 @@
     .bubble{padding:14px 18px;border-radius:18px;font-size:15px;line-height:1.5;white-space:pre-wrap}
     .chat-msg.user .bubble{background:var(--purple);border-bottom-right-radius:4px}
     .chat-msg.assistant .bubble{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px}
+    .chat-typing{padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:18px;color:var(--text2);font-size:14px}
     .chat-input-area{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;background:var(--bg)}
     .chat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;color:var(--text);font-size:16px;outline:none}
     .chat-send{width:50px;height:50px;background:var(--purple);border:none;border-radius:14px;color:white;font-size:20px;cursor:pointer}
     
-    /* Bottom Nav */
     .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,15,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;justify-content:center;padding:10px 20px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
     .nav-btn{flex:1;max-width:120px;padding:10px;background:none;border:none;border-radius:12px;color:var(--text2);font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
     .nav-btn.active{color:var(--purple);background:rgba(139,92,246,0.1)}
@@ -137,14 +140,30 @@
     </header>
     
     <div class="stats">
-      <div class="stat"><div class="stat-num urgent" id="urgentCount">0</div><div class="stat-label">Срочных</div></div>
-      <div class="stat"><div class="stat-num today" id="todayCount">0</div><div class="stat-label">На сегодня</div></div>
-      <div class="stat"><div class="stat-num done" id="doneCount">0</div><div class="stat-label">Выполнено</div></div>
+      <div class="stat" id="statUrgent" onclick="filterBy('urgent')">
+        <div class="stat-num urgent" id="urgentCount">0</div>
+        <div class="stat-label">Срочных</div>
+      </div>
+      <div class="stat" id="statToday" onclick="filterBy('today')">
+        <div class="stat-num today" id="todayCount">0</div>
+        <div class="stat-label">На сегодня</div>
+      </div>
+      <div class="stat" id="statDone" onclick="filterBy('done')">
+        <div class="stat-num done" id="doneCount">0</div>
+        <div class="stat-label">Выполнено</div>
+      </div>
+    </div>
+    
+    <div class="active-filter" id="activeFilter">
+      <div class="filter-tag">
+        <span id="filterLabel">Фильтр</span>
+        <button onclick="clearFilter()">✕</button>
+      </div>
     </div>
     
     <div class="input-section">
       <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🎤</button>
-      <input type="text" class="text-input" id="textInput" placeholder="Добавить задачу..." onkeypress="if(event.key==='Enter')sendText()">
+      <input type="text" class="text-input" id="textInput" placeholder="Добавить задачу или команду..." onkeypress="if(event.key==='Enter')sendText()">
       <button class="send-btn" onclick="sendText()">+</button>
     </div>
     
@@ -152,21 +171,20 @@
     
     <div class="tasks-section">
       <div class="section-header">
-        <h2 class="section-title">Мои задачи</h2>
-        <div class="filters">
-          <button class="filter active" data-f="active" onclick="setFilter('active')">Активные</button>
-          <button class="filter" data-f="done" onclick="setFilter('done')">Готовые</button>
+        <h2 class="section-title" id="sectionTitle">Все задачи</h2>
+        <div class="view-toggle">
+          <button class="view-btn active" data-v="active" onclick="setView('active')">Активные</button>
+          <button class="view-btn" data-v="all" onclick="setView('all')">Все</button>
         </div>
       </div>
       <div class="task-list" id="taskList"></div>
     </div>
   </div>
 
-  <!-- Edit Modal -->
   <div class="modal-overlay" id="editModal">
     <div class="modal">
       <div class="modal-header">
-        <span class="modal-title">Редактировать задачу</span>
+        <span class="modal-title">Редактировать</span>
         <button class="modal-close" onclick="closeEditModal()">×</button>
       </div>
       <div class="modal-body">
@@ -199,7 +217,6 @@
     </div>
   </div>
 
-  <!-- Chat Modal -->
   <div class="chat-modal" id="chatModal">
     <div class="chat-header">
       <button class="back-btn" onclick="closeChat()">←</button>
@@ -220,29 +237,35 @@
   </div>
 
   <nav class="bottom-nav">
-    <button class="nav-btn active"><span class="nav-icon">📋</span><span>Задачи</span></button>
+    <button class="nav-btn active" onclick="goTasks()"><span class="nav-icon">📋</span><span>Задачи</span></button>
     <button class="nav-btn" onclick="openChat()"><span class="nav-icon">🤖</span><span>AI</span></button>
   </nav>
 
   <script>
     const API='/api/chat';
-    let tasks=JSON.parse(localStorage.getItem('taskai2')||'[]');
-    let filter='active';
+    let tasks=JSON.parse(localStorage.getItem('taskai3')||'[]');
+    let viewMode='active';
+    let filterMode=null;
     let listening=false;
     let recognition=null;
     let chatHistory=[];
     let editingId=null;
     let editPriority='medium';
+    let isProcessing=false;
 
-    renderTasks();
-    updateStats();
-    setupSpeech();
+    init();
+
+    function init(){
+      renderTasks();
+      updateStats();
+      setupSpeech();
+    }
 
     function setupSpeech(){
       if('webkitSpeechRecognition' in window||'SpeechRecognition' in window){
         const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
         recognition=new SR();
-        recognition.continuous=true;
+        recognition.continuous=false;
         recognition.interimResults=true;
         recognition.lang='ru-RU';
         recognition.onresult=e=>{
@@ -253,9 +276,9 @@
         recognition.onerror=()=>stopVoice();
         recognition.onend=()=>{
           if(listening){
-            const t=document.getElementById('textInput').value;
-            if(t.trim())processInput(t);
+            const t=document.getElementById('textInput').value.trim();
             stopVoice();
+            if(t)handleInput(t);
           }
         };
       }
@@ -266,6 +289,7 @@
     function startVoice(){
       listening=true;
       document.getElementById('voiceBtn').classList.add('listening');
+      document.getElementById('textInput').value='';
       document.getElementById('textInput').placeholder='Говорите...';
       recognition.start();
     }
@@ -273,13 +297,57 @@
     function stopVoice(){
       listening=false;
       document.getElementById('voiceBtn').classList.remove('listening');
-      document.getElementById('textInput').placeholder='Добавить задачу...';
+      document.getElementById('textInput').placeholder='Добавить задачу или команду...';
+    }
+
+    function sendText(){
+      const inp=document.getElementById('textInput');
+      const t=inp.value.trim();
+      if(t){
+        inp.value='';
+        handleInput(t);
+      }
+    }
+
+    function handleInput(text){
+      const lower=text.toLowerCase();
+      
+      // Голосовые команды
+      if(lower.includes('срочн')||lower.includes('urgent')){
+        if(lower.includes('покажи')||lower.includes('открой')||lower.includes('показать')){
+          filterBy('urgent');
+          toast('🔴 Показываю срочные');
+          return;
+        }
+      }
+      if(lower.includes('сегодня')||lower.includes('today')){
+        if(lower.includes('покажи')||lower.includes('открой')||lower.includes('что ')||lower.includes('показать')){
+          filterBy('today');
+          toast('📅 Показываю на сегодня');
+          return;
+        }
+      }
+      if(lower.includes('выполнен')||lower.includes('готов')||lower.includes('done')){
+        if(lower.includes('покажи')||lower.includes('открой')||lower.includes('показать')){
+          filterBy('done');
+          toast('✅ Показываю выполненные');
+          return;
+        }
+      }
+      if(lower.includes('все задачи')||lower.includes('показать все')||lower==='все'){
+        clearFilter();
+        toast('📋 Все задачи');
+        return;
+      }
+      
+      // Иначе — добавляем задачу
+      processInput(text);
     }
 
     async function processInput(text){
-      if(!text.trim())return;
+      if(!text.trim()||isProcessing)return;
+      isProcessing=true;
       document.getElementById('processing').classList.add('show');
-      document.getElementById('textInput').value='';
       
       try{
         const res=await fetch(API,{
@@ -290,25 +358,25 @@
         const data=await res.json();
         
         if(data.error){
-          toast('❌ '+data.error);
-          throw new Error(data.error);
+          console.error('API error:',data.error);
+          addTaskSimple(text);
+          return;
         }
         
         let newTasks=[];
         try{
-          const match=data.content.match(/\[[\s\S]*\]/);
+          const match=data.content.match(/\[[\s\S]*?\]/);
           if(match)newTasks=JSON.parse(match[0]);
         }catch(e){console.log('Parse error',e)}
         
-        if(newTasks.length){
+        if(newTasks&&newTasks.length){
           newTasks.forEach(t=>{
-            tasks.push({
+            tasks.unshift({
               id:Date.now()+Math.random(),
               title:t.title||text,
               description:t.description||'',
               priority:t.priority||'medium',
               deadline:t.deadline||null,
-              category:t.category||'other',
               status:'active',
               created:new Date().toISOString()
             });
@@ -318,67 +386,100 @@
           updateStats();
           toast('✅ Добавлено: '+newTasks.length);
         }else{
-          // Если AI не распарсил, добавим как есть
-          tasks.push({
-            id:Date.now(),
-            title:text,
-            description:'',
-            priority:'medium',
-            deadline:null,
-            category:'other',
-            status:'active',
-            created:new Date().toISOString()
-          });
-          save();
-          renderTasks();
-          updateStats();
-          toast('✅ Задача добавлена');
+          addTaskSimple(text);
         }
       }catch(e){
         console.error(e);
-        // Добавим задачу без AI
-        tasks.push({
-          id:Date.now(),
-          title:text,
-          description:'',
-          priority:'medium',
-          deadline:null,
-          category:'other',
-          status:'active',
-          created:new Date().toISOString()
-        });
-        save();
-        renderTasks();
-        updateStats();
-        toast('✅ Задача добавлена');
+        addTaskSimple(text);
       }
       
+      isProcessing=false;
       document.getElementById('processing').classList.remove('show');
     }
 
-    function sendText(){
-      const inp=document.getElementById('textInput');
-      const t=inp.value.trim();
-      if(t)processInput(t);
+    function addTaskSimple(text){
+      tasks.unshift({
+        id:Date.now(),
+        title:text,
+        description:'',
+        priority:'medium',
+        deadline:null,
+        status:'active',
+        created:new Date().toISOString()
+      });
+      save();
+      renderTasks();
+      updateStats();
+      toast('✅ Задача добавлена');
+      document.getElementById('processing').classList.remove('show');
     }
 
-    function save(){localStorage.setItem('taskai2',JSON.stringify(tasks))}
+    function save(){localStorage.setItem('taskai3',JSON.stringify(tasks))}
+
+    function filterBy(type){
+      filterMode=type;
+      document.querySelectorAll('.stat').forEach(s=>s.classList.remove('active'));
+      document.getElementById('stat'+type.charAt(0).toUpperCase()+type.slice(1)).classList.add('active');
+      
+      const labels={urgent:'🔴 Срочные',today:'📅 На сегодня',done:'✅ Выполненные'};
+      document.getElementById('filterLabel').textContent=labels[type];
+      document.getElementById('activeFilter').classList.add('show');
+      document.getElementById('sectionTitle').textContent=labels[type];
+      
+      renderTasks();
+    }
+
+    function clearFilter(){
+      filterMode=null;
+      document.querySelectorAll('.stat').forEach(s=>s.classList.remove('active'));
+      document.getElementById('activeFilter').classList.remove('show');
+      document.getElementById('sectionTitle').textContent='Все задачи';
+      renderTasks();
+    }
+
+    function setView(v){
+      viewMode=v;
+      document.querySelectorAll('.view-btn').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+      renderTasks();
+    }
 
     function renderTasks(){
       const list=document.getElementById('taskList');
-      let f=tasks.filter(t=>filter==='active'?t.status!=='done':t.status==='done');
+      let f=tasks;
       
+      const today=new Date();
+      today.setHours(0,0,0,0);
+      const tomorrow=new Date(today);
+      tomorrow.setDate(tomorrow.getDate()+1);
+      
+      // Apply filter
+      if(filterMode==='urgent'){
+        f=f.filter(t=>t.priority==='urgent'&&t.status!=='done');
+      }else if(filterMode==='today'){
+        f=f.filter(t=>t.deadline&&t.status!=='done'&&new Date(t.deadline)>=today&&new Date(t.deadline)<tomorrow);
+      }else if(filterMode==='done'){
+        f=f.filter(t=>t.status==='done');
+      }else{
+        // Default view
+        if(viewMode==='active'){
+          f=f.filter(t=>t.status!=='done');
+        }
+      }
+      
+      // Sort
       const prio={urgent:0,high:1,medium:2,low:3};
       f.sort((a,b)=>{
+        if(a.status!==b.status)return a.status==='done'?1:-1;
         if(prio[a.priority]!==prio[b.priority])return prio[a.priority]-prio[b.priority];
         if(a.deadline&&b.deadline)return new Date(a.deadline)-new Date(b.deadline);
         if(a.deadline)return -1;
         if(b.deadline)return 1;
-        return new Date(b.created)-new Date(a.created);
+        return 0;
       });
       
       if(!f.length){
-        list.innerHTML=`<div class="empty"><div class="empty-icon">📝</div><div class="empty-title">${filter==='done'?'Нет выполненных':'Нет задач'}</div><div>Нажми на микрофон или напиши задачу</div></div>`;
+        const emptyMsg=filterMode?'Нет задач в этой категории':'Нет задач';
+        list.innerHTML='<div class="empty"><div class="empty-icon">📝</div><div class="empty-title">'+emptyMsg+'</div><div>Скажи или напиши задачу</div></div>';
         return;
       }
       
@@ -386,18 +487,7 @@
       
       list.innerHTML=f.map(t=>{
         const dl=deadlineInfo(t.deadline);
-        return`<div class="task ${t.status==='done'?'done':''}" onclick="openEdit(${t.id})">
-          <div class="task-header">
-            <div class="checkbox" onclick="event.stopPropagation();toggle(${t.id})"></div>
-            <div class="task-content">
-              <div class="task-title">${esc(t.title)}</div>
-              <div class="task-meta">
-                <span class="badge ${t.priority}">${prioLabels[t.priority]}</span>
-                ${t.deadline?`<span class="badge deadline ${dl.cls}">📅 ${dl.text}</span>`:''}
-              </div>
-            </div>
-          </div>
-        </div>`;
+        return'<div class="task '+(t.status==='done'?'done':'')+'" onclick="openEdit('+t.id+')"><div class="task-header"><div class="checkbox" onclick="event.stopPropagation();toggle('+t.id+')"></div><div class="task-content"><div class="task-title">'+esc(t.title)+'</div><div class="task-meta"><span class="badge '+t.priority+'">'+prioLabels[t.priority]+'</span>'+(t.deadline?'<span class="badge deadline '+dl.cls+'">📅 '+dl.text+'</span>':'')+'</div></div></div></div>';
       }).join('');
     }
 
@@ -424,15 +514,10 @@
       }
     }
 
-    function setFilter(f){
-      filter=f;
-      document.querySelectorAll('.filter').forEach(el=>el.classList.toggle('active',el.dataset.f===f));
-      renderTasks();
-    }
-
     function updateStats(){
       const active=tasks.filter(t=>t.status!=='done');
       document.getElementById('urgentCount').textContent=active.filter(t=>t.priority==='urgent').length;
+      
       const today=new Date();
       today.setHours(0,0,0,0);
       const tom=new Date(today);
@@ -441,7 +526,6 @@
       document.getElementById('doneCount').textContent=tasks.filter(t=>t.status==='done').length;
     }
 
-    // Edit Modal
     function openEdit(id){
       const t=tasks.find(x=>x.id===id);
       if(!t)return;
@@ -489,8 +573,21 @@
     }
 
     // Chat
-    function openChat(){document.getElementById('chatModal').classList.add('open')}
-    function closeChat(){document.getElementById('chatModal').classList.remove('open')}
+    function openChat(){
+      document.getElementById('chatModal').classList.add('open');
+      document.querySelectorAll('.nav-btn')[1].classList.add('active');
+      document.querySelectorAll('.nav-btn')[0].classList.remove('active');
+    }
+    
+    function closeChat(){
+      document.getElementById('chatModal').classList.remove('open');
+      document.querySelectorAll('.nav-btn')[0].classList.add('active');
+      document.querySelectorAll('.nav-btn')[1].classList.remove('active');
+    }
+    
+    function goTasks(){
+      closeChat();
+    }
 
     function askQ(btn){
       document.getElementById('chatInput').value=btn.textContent.replace(/^[^\s]+\s/,'');
@@ -507,14 +604,23 @@
       renderChatMsg();
       document.getElementById('suggestions').style.display='none';
       
+      // Show typing
+      const chatDiv=document.getElementById('chatMessages');
+      const typingEl=document.createElement('div');
+      typingEl.className='chat-typing';
+      typingEl.id='typing';
+      typingEl.textContent='AI думает...';
+      chatDiv.appendChild(typingEl);
+      chatDiv.scrollTop=chatDiv.scrollHeight;
+      
       const summary=tasks.map(t=>{
         const st=t.status==='done'?'✅':'⬜';
-        const dl=t.deadline?' (до '+t.deadline+')':'';
+        const dl=t.deadline?' до '+t.deadline:'';
         const pr={urgent:'СРОЧНО',high:'важно',medium:'обычно',low:'не срочно'}[t.priority];
         return st+' ['+pr+'] '+t.title+dl;
       }).join('\n');
       
-      const sys='Ты AI-ассистент для управления задачами. Сегодня: '+new Date().toLocaleDateString('ru-RU')+'\n\nЗадачи пользователя:\n'+(summary||'Нет задач')+'\n\nПомогай с планированием, приоритизацией, давай советы. Отвечай кратко, на русском, используй эмодзи.';
+      const sys='Ты AI-ассистент для управления задачами. Сегодня: '+new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})+'\n\nЗадачи пользователя:\n'+(summary||'Пусто')+'\n\nПомогай с планированием, приоритизацией, давай конкретные советы. Отвечай кратко и полезно, на русском, используй эмодзи.';
       
       try{
         const res=await fetch(API,{
@@ -523,11 +629,18 @@
           body:JSON.stringify({system:sys,messages:chatHistory})
         });
         const data=await res.json();
-        if(data.error)throw new Error(data.error);
-        chatHistory.push({role:'assistant',content:data.content});
+        
+        document.getElementById('typing')?.remove();
+        
+        if(data.error){
+          chatHistory.push({role:'assistant',content:'❌ Ошибка: '+data.error});
+        }else{
+          chatHistory.push({role:'assistant',content:data.content});
+        }
         renderChatMsg();
       }catch(e){
-        chatHistory.push({role:'assistant',content:'❌ Ошибка: '+e.message});
+        document.getElementById('typing')?.remove();
+        chatHistory.push({role:'assistant',content:'❌ Нет связи с сервером'});
         renderChatMsg();
       }
     }
@@ -541,7 +654,6 @@
     function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
     function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500)}
     
-    // Close modal on overlay click
     document.getElementById('editModal').addEventListener('click',e=>{if(e.target.id==='editModal')closeEditModal()});
   </script>
 </body>
