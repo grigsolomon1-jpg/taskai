@@ -265,45 +265,65 @@ async function addTask() {
   document.getElementById('loading').classList.add('show');
   
   try {
-    dbg('Отправляю: ' + text);
+    dbg('Запрос: ' + text);
     const res = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode: 'parse', messages: [{ role: 'user', content: text }] })
+      body: JSON.stringify({ 
+        mode: 'parse', 
+        messages: [{ role: 'user', content: text }] 
+      })
     });
     
     const data = await res.json();
-    dbg('Ответ: ' + JSON.stringify(data));
+    dbg('Ответ AI: ' + JSON.stringify(data));
     
     if (data.error) {
-      dbg('Ошибка API: ' + data.error);
+      dbg('Ошибка: ' + data.error);
       addSimple(text);
+      document.getElementById('loading').classList.remove('show');
       return;
     }
     
+    // AI возвращает чистый JSON массив в data.content
     let parsed = [];
     try {
-      const m = data.content.match(/\[[\s\S]*?\]/);
-      if (m) parsed = JSON.parse(m[0]);
-    } catch(e) { dbg('Ошибка парсинга: ' + e.message); }
+      // Убираем markdown форматирование если есть
+      let content = data.content.trim();
+      content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+      dbg('Очищенный контент: ' + content);
+      
+      parsed = JSON.parse(content);
+      dbg('Распарсено задач: ' + parsed.length);
+    } catch(e) {
+      dbg('Ошибка парсинга JSON: ' + e.message);
+      addSimple(text);
+      document.getElementById('loading').classList.remove('show');
+      return;
+    }
     
-    if (parsed.length) {
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      let added = 0;
       parsed.forEach(t => {
-        tasks.unshift({
-          id: Date.now() + Math.random(),
-          title: t.title || text,
-          prio: mapPrio(t.priority),
-          date: t.deadline || null,
-          done: false
-        });
+        if (t.title) {
+          tasks.unshift({
+            id: Date.now() + Math.random(),
+            title: t.title,
+            prio: mapPrio(t.priority),
+            date: t.deadline || null,
+            done: false
+          });
+          added++;
+        }
       });
       save();
-      toast('✅ Добавлено: ' + parsed.length);
+      toast(`✅ Добавлено: ${added}`);
     } else {
+      dbg('Пустой массив, добавляю простую задачу');
       addSimple(text);
     }
   } catch(e) {
-    dbg('Fetch ошибка: ' + e.message);
+    dbg('Ошибка fetch: ' + e.message);
     addSimple(text);
   }
   
@@ -313,6 +333,8 @@ async function addTask() {
 }
 
 function mapPrio(p) {
+  if (!p) return 'inwork';
+  p = p.toLowerCase();
   if (p === 'urgent') return 'urgent';
   if (p === 'high' || p === 'important') return 'important';
   if (p === 'low' || p === 'later') return 'later';
@@ -320,7 +342,13 @@ function mapPrio(p) {
 }
 
 function addSimple(text) {
-  tasks.unshift({ id: Date.now(), title: text, prio: 'inwork', date: null, done: false });
+  tasks.unshift({ 
+    id: Date.now(), 
+    title: text, 
+    prio: 'inwork', 
+    date: null, 
+    done: false 
+  });
   save();
   toast('✅ Добавлено');
 }
@@ -537,7 +565,6 @@ ${taskList || 'Нет задач'}
 Помогай планировать, давай советы по приоритетам. Отвечай кратко, на русском, с эмодзи.`;
   
   try {
-    dbg('Chat запрос...');
     const res = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -548,7 +575,6 @@ ${taskList || 'Нет задач'}
     });
     
     const data = await res.json();
-    dbg('Chat ответ: ' + JSON.stringify(data).substring(0, 200));
     
     document.getElementById('typing')?.remove();
     
@@ -560,7 +586,6 @@ ${taskList || 'Нет задач'}
       chatMsgs.push({ role: 'bot', text: '❌ Пустой ответ' });
     }
   } catch(e) {
-    dbg('Chat fetch ошибка: ' + e.message);
     document.getElementById('typing')?.remove();
     chatMsgs.push({ role: 'bot', text: '❌ Ошибка связи: ' + e.message });
   }
@@ -570,7 +595,17 @@ ${taskList || 'Нет задач'}
 
 function renderChat() {
   const div = document.getElementById('chatMsgs');
-  div.innerHTML = chatMsgs.map(m => `<div class="msg ${m.role === 'user' ? 'user' : 'bot'}">${esc(m.text)}</div>`).join('');
+  const suggestDiv = document.getElementById('chatSuggest');
+  div.innerHTML = '';
+  if (chatMsgs.length === 0 && suggestDiv) {
+    div.appendChild(suggestDiv);
+  }
+  chatMsgs.forEach(m => {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `msg ${m.role === 'user' ? 'user' : 'bot'}`;
+    msgDiv.textContent = m.text;
+    div.appendChild(msgDiv);
+  });
   div.scrollTop = div.scrollHeight;
 }
 
